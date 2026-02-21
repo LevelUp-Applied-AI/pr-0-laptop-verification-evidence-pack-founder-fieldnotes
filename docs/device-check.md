@@ -5,7 +5,6 @@
 **GitHub username:** [your-github-username]
 
 ---
-<img width="591" height="273" alt="Screenshot 2026-02-21 at 2 14 41 AM" src="https://github.com/user-attachments/assets/e73ed967-199c-436f-932b-cec95f003b2a" />
 
 ## System Specifications
 
