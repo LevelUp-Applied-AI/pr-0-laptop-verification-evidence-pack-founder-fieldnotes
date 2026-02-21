@@ -1,0 +1,53 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Device Check File Exists
+      id: device-check-file-exists
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Device Check File Exists
+        setup-command: pip install pytest
+        command: pytest tests/test_pr_00_laptop_verify.py::test_device_check_md_exists
+          -v
+        timeout: 10
+        max-score: 1
+    - name: Device Check File Not Empty
+      id: device-check-file-not-empty
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Device Check File Not Empty
+        setup-command: pip install pytest
+        command: pytest tests/test_pr_00_laptop_verify.py::test_device_check_md_not_empty
+          -v
+        timeout: 10
+        max-score: 1
+    - name: Screenshot Present
+      id: screenshot-present
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Screenshot Present
+        setup-command: pip install pytest
+        command: pytest tests/test_pr_00_laptop_verify.py::test_screenshots_present
+          -v
+        timeout: 10
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        DEVICE-CHECK-FILE-EXISTS_RESULTS: "${{steps.device-check-file-exists.outputs.result}}"
+        DEVICE-CHECK-FILE-NOT-EMPTY_RESULTS: "${{steps.device-check-file-not-empty.outputs.result}}"
+        SCREENSHOT-PRESENT_RESULTS: "${{steps.screenshot-present.outputs.result}}"
+      with:
+        runners: device-check-file-exists,device-check-file-not-empty,screenshot-present
